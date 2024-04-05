@@ -8,18 +8,18 @@ class CinemaBookingApp(QWidget):
         super().__init__()
         self.setWindowTitle("Booking Cinema")
         self.showMaximized()
-        self.__image_seat_regular = QPixmap("seat.png").scaled(50, 50)
-        self.__image_seat_vip = QPixmap("vip.png").scaled(50, 50)
+        self.__image_seat_regular = QPixmap("seat.png").scaled(50, 50)  # load รูปภาพ regular
+        self.__image_seat_vip = QPixmap("vip.png").scaled(50, 50)  # load รูปภาพ vip
         palette = self.palette()
         palette.setColor(QPalette.ColorRole.Window, Qt.GlobalColor.white)
         self.setPalette(palette)
-        self.__cinema = CinemaHall(50)
+        self.__cinema = CinemaHall(50) # set ค่าที่นั่ง 
         self.__main_layout = QGridLayout()  # สร้าง QGridLayout สำหรับจัดวางปุ่ม
         self.__main_layout.setContentsMargins(300,300,300,300)
         self.setLayout(self.__main_layout)
         self.display_seat(self.__main_layout)
 
-
+    # แสดงเก้าอี้ทั้งหมด เริ่มต้น  ทั้ง vip และ regular 
     def display_seat(self , main_layout):
         # สร้างปุ่ม Regular
         for row in range(5):
@@ -35,8 +35,8 @@ class CinemaBookingApp(QWidget):
                         self.draw_seat_vip(seat_number, main_layout, row, col)
 
     
+    # update seat
     def display_update(self):
-        # สร้างปุ่ม Regular
         for row in range(5):
             for col in range(10):
                 seat_number = row * 10 + col
@@ -50,9 +50,8 @@ class CinemaBookingApp(QWidget):
                            self.draw_seat_vip(seat_number, self.__main_layout, row, col)
              
 
-
+    # วาดหน้าจอโรงหนัง
     def paintEvent(self,event):
-        # วาดหน้าจอโรงหนัง
         screen = QRectF(1300 / 2, 30, 600, 100)
         margin = 80
         movie_title = QRectF(screen.x() + margin, screen.y() + margin, screen.width() - 2 * margin, screen.height() - 2 * margin)
@@ -62,19 +61,14 @@ class CinemaBookingApp(QWidget):
         painter.setFont(QFont("Arial", 12))
         painter.drawText(movie_title, Qt.AlignmentFlag.AlignHCenter, "Conjuring แหกนะจ๊ะ")
         painter.drawRect(screen)
-
-    def cancel_booking(self):
-        seat_number = self.seat_input.text()
-        # โค้ดส่วนการยกเลิกการจองที่นี่
-        QMessageBox.information(self, 'Booking Status', f'Booking for seat {seat_number} has been cancelled.')
-
+    # วาดเก้าอี้ regular
     def draw_seat(self, number, layout, row, col):
         icon_button = QPushButton(QIcon(self.__image_seat_regular), '', self)
         icon_button.setStyleSheet('border: none;')
         icon_button.setIconSize(QSize(50, 50))
         layout.addWidget(icon_button, row, col)
         icon_button.clicked.connect(lambda: self.booking_seat(number))
-
+  # วาดเก้าอี้ vip
     def draw_seat_vip(self, number, layout, row, col):
         icon_button = QPushButton(QIcon(self.__image_seat_vip), '', self)
         icon_button.setStyleSheet('border: none;')
@@ -82,12 +76,14 @@ class CinemaBookingApp(QWidget):
         layout.addWidget(icon_button, row + 3, col)
         icon_button.clicked.connect(lambda: self.booking_seat(number))
 
+    # ui เมือกดคลิกที่ปุ่ม
     def booking_seat(self, number):
         if number >= 30:
              self.ui_booking('VIP' , number , 500)
         else:
             self.ui_booking('Regular', number , 200)
 
+    # ui เมือกดคลิกที่ปุ่ม เพื่อรับค่าการจอง
     def ui_booking(self,seat_type , number , price):
         message = f'{seat_type} Seat'
 
@@ -122,6 +118,7 @@ class CinemaBookingApp(QWidget):
         dialog.setLayout(layout)
         dialog.exec()
 
+    # เมื่อกดจอง
     def on_ok_booking(self, dialog, number, name):
         if not name:
             self.display_messagebox('Please enter your name.')
@@ -138,6 +135,7 @@ class CinemaBookingApp(QWidget):
         self.display_update()
         dialog.accept()
 
+    # เอาไว้ สร้าง messagebox
     def display_messagebox(self  , message):
         # สร้าง QMessageBox
         msg_box = QMessageBox()
