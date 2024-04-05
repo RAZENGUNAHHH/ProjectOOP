@@ -7,7 +7,7 @@ class CinemaBookingApp(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Booking Cinema")
-        self.showMaximized()
+        self.showFullScreen()
         self.__image_seat_regular = QPixmap("seat.png").scaled(50, 50)  # load รูปภาพ regular
         self.__image_seat_vip = QPixmap("vip.png").scaled(50, 50)  # load รูปภาพ vip
         palette = self.palette()
@@ -18,6 +18,14 @@ class CinemaBookingApp(QWidget):
         self.__main_layout.setContentsMargins(300,300,300,300)
         self.setLayout(self.__main_layout)
         self.display_seat(self.__main_layout)
+        
+        # สร้างปุ่มปิดโปรแกรม
+        self.close_button = QPushButton("Close", self)
+        self.close_button.clicked.connect(self.close_app)
+        self.__main_layout.addWidget(self.close_button, 11, 0, 1, 10)  # เพิ่มปุ่มลงใน main_layout
+
+    def close_app(self):
+        self.close()
 
     # แสดงเก้าอี้ทั้งหมด เริ่มต้น  ทั้ง vip และ regular 
     def display_seat(self , main_layout):
@@ -53,14 +61,15 @@ class CinemaBookingApp(QWidget):
     # วาดหน้าจอโรงหนัง
     def paintEvent(self,event):
         screen = QRectF(1300 / 2, 30, 600, 100)
-        margin = 80
+        margin = 0
         movie_title = QRectF(screen.x() + margin, screen.y() + margin, screen.width() - 2 * margin, screen.height() - 2 * margin)
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         painter.setPen(Qt.GlobalColor.black)
-        painter.setFont(QFont("Arial", 12))
-        painter.drawText(movie_title, Qt.AlignmentFlag.AlignHCenter, "Conjuring แหกนะจ๊ะ")
+        painter.setFont(QFont("Arial", 20))
+        painter.drawText(movie_title, Qt.AlignmentFlag.AlignHCenter, "Conjuring")
         painter.drawRect(screen)
+
     # วาดเก้าอี้ regular
     def draw_seat(self, number, layout, row, col):
         icon_button = QPushButton(QIcon(self.__image_seat_regular), '', self)
